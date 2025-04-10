@@ -13,13 +13,25 @@ import java.util.Map;
 @RequestMapping("/journal")
 public class JournalEntryController {
     private Map<Long,journalentry> journalEntries= new HashMap<>();
+
+
     @GetMapping
     public List <journalentry> getAll(){ // localhost 8080:GET
         return new ArrayList<>(journalEntries.values());
     }
+
     @PostMapping
     public boolean createenrty(@RequestBody journalentry jentry){ // localhost : 8080/journal POST
        journalEntries.put(jentry.getId(), jentry);
        return true;
+    }
+
+    @GetMapping("id/{ Myid}")
+    public journalentry getjournalentry(@PathVariable long Myid){
+       return journalEntries.get(Myid);
+    }
+    @PutMapping("/id/{id}")
+    public journalentry updatejournalentry(@PathVariable long id , @RequestBody journalentry jentry){
+        return journalEntries.put(id,jentry);
     }
 }
