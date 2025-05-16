@@ -23,4 +23,5 @@ public class user {
     private String password;
     @DBRef // creating a reference of journalentry class in users collection where journalEntries is the reference
     private List<journalentry> journalEntries = new ArrayList<>();
+    private List<String> roles;
 }

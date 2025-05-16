@@ -8,6 +8,8 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -20,23 +22,15 @@ public class UserController {
     @Autowired
      private userentryservice Userservice;
 
-    @GetMapping
-    public List<user> getAllUsers(){
-        return Userservice.getAll();
-    }
-    @PostMapping
-    private void createuser (@RequestBody user User){
-        Userservice.saveEntry(User);
-    }
 
-    @PutMapping("/{userName}")
-    public ResponseEntity<?> updateUser(@RequestBody user User , @PathVariable String userName){
-       user userInDb = Userservice.findByUserName(userName);
-       if(userInDb != null){
-           userInDb.setUserName(User.getUserName());
-           userInDb.setPassword(User.getPassword());
-           Userservice.saveEntry(userInDb);
-       }
+    @PutMapping
+    public ResponseEntity<?> updateUser(@RequestBody user User ){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName= authentication.getName();
+        user userInDb = Userservice.findByUserName(userName);
+        userInDb.setUserName(User.getUserName());
+        userInDb.setPassword(User.getPassword());
+        Userservice.saveEntry(userInDb);
        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
